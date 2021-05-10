@@ -22,7 +22,6 @@ export class SkeletonTexture extends spine.Texture {
     }
 
     getRealTexture (): Texture2D|null {
-        if (!this._texture) { return null; }
         return this._texture;
     }
 
