@@ -627,8 +627,6 @@ export class TMXMapInfo {
                 const images = curTileset.getElementsByTagName('image');
                 const collection = images.length > 1;
                 const firstImage = images[0];
-                let firstImageName: string = firstImage.getAttribute('source')!;
-                firstImageName = firstImageName.replace(/\\/g, '/');
 
                 const tiles = curTileset.getElementsByTagName('tile');
                 const tileCount = tiles && tiles.length || 1;
