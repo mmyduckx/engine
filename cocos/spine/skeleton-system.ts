@@ -29,34 +29,43 @@ export class SkeletonSystem extends System {
 
     protected _skeleton : Skeleton| null = null;
 
-    protected _onEnable = false;
+    // protected _onEnable = false;
 
-    public onEnable () {
-        if (!this._onEnable) {
-            this._onEnable = true;
-        }
-    }
+    private static _skeletonCount = 0;
 
-    public onDisable () {
-        this._onEnable = false;
-    }
+    // constructor () {
+    //     super();
+    //     SkeletonSystem._skeletonCount = 0;
+    // }
+
+    // public onEnable () {
+    //     if (!this._onEnable) {
+    //         this._onEnable = true;
+    //     }
+    // }
+
+    // public onDisable () {
+    //     this._onEnable = false;
+    // }
 
     postUpdate (dt: number) {
-        // if (EDITOR) {
-        // }
-        if (!this._onEnable || !this._skeleton) {
+        if (!this._skeleton) {
             return;
         }
         this._skeleton.updateAnimation(dt);
     }
 
     public registerSkeleton (skeleton: Skeleton | null) {
-        this.onEnable();
+        if (!skeleton) return;
+        SkeletonSystem._skeletonCount++;
         this._skeleton = skeleton;
     }
 
     public unregisterSkeleton () {
-        this.onDisable();
+        SkeletonSystem._skeletonCount--;
+        if (SkeletonSystem._skeletonCount === 0 && SkeletonSystem._instance) {
+            director.unregisterSystem(SkeletonSystem._instance);
+        }
     }
 }
 
@@ -65,6 +74,10 @@ director.once(Director.EVENT_INIT, () => {
 });
 
 function initSkeletonSystem () {
+    const oldIns = SkeletonSystem._instance;
+    if (oldIns) {
+        director.unregisterSystem(oldIns);
+    }
     const sys = new SkeletonSystem();
     (SkeletonSystem._instance as any) = sys;
     director.registerSystem(SkeletonSystem.ID, sys, Scheduler.PRIORITY_SYSTEM);

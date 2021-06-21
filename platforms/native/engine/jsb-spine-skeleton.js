@@ -436,10 +436,7 @@ const cacheManager = require('./jsb-cache-manager');
         }
     };
 
-    let _updateAnimation = skeleton.updateAnimation;
-    skeleton.updateAnimation = function (dt) {
-        // if (_updateAnimation) _updateAnimation.call(this, dt);
-
+    skeleton.updateAnimation = function () {
         let nativeSkeleton = this._nativeSkeleton;
         if (!nativeSkeleton) return;
 
@@ -468,7 +465,6 @@ const cacheManager = require('./jsb-cache-manager');
         }
 
         if (!this.isAnimationCached() && (this.debugBones || this.debugSlots || this.debugMesh) && this._debugRenderer) {
-            
             let graphics = this._debugRenderer;
             graphics.clear();
             graphics.lineWidth = 5;
