@@ -4,6 +4,7 @@
  */
 
 import { EDITOR } from 'internal:constants';
+import { SkeletonSystem } from './skeleton-system';
 import { TrackEntryListeners } from './track-entry-listeners';
 import spine from './lib/spine-core.js';
 import SkeletonCache, { AnimationCache, AnimationFrame } from './skeleton-cache';
@@ -707,7 +708,7 @@ export class Skeleton extends Renderable2D {
         return this._cacheMode !== AnimationCacheMode.REALTIME;
     }
 
-    public update (dt: number) {
+    public updateAnimation (dt: number) {
         if (EDITOR) return;
         if (this.paused) return;
 
@@ -1243,10 +1244,12 @@ export class Skeleton extends Renderable2D {
     public onEnable () {
         super.onEnable();
         this._flushAssembler();
+        SkeletonSystem._instance.registerSkeleton(this);
     }
 
     public onDisable () {
         super.onDisable();
+        SkeletonSystem._instance.unregisterSkeleton();
     }
 
     public onDestroy () {
