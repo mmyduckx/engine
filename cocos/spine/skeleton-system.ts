@@ -63,9 +63,6 @@ export class SkeletonSystem extends System {
 
     public unregisterSkeleton () {
         SkeletonSystem._skeletonCount--;
-        if (SkeletonSystem._skeletonCount === 0 && SkeletonSystem._instance) {
-            director.unregisterSystem(SkeletonSystem._instance);
-        }
     }
 }
 
@@ -80,7 +77,7 @@ function initSkeletonSystem () {
     }
     const sys = new SkeletonSystem();
     (SkeletonSystem._instance as any) = sys;
-    director.registerSystem(SkeletonSystem.ID, sys, Scheduler.PRIORITY_SYSTEM);
+    director.registerSystem(SkeletonSystem.ID, sys, 100);
 }
 
 legacyCC.internal.SpineSkeletonSystem = SkeletonSystem;
