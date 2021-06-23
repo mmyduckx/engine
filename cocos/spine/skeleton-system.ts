@@ -1,9 +1,6 @@
-import { EDITOR } from 'internal:constants';
 import { director, Director } from '../core/director';
 import { System } from '../core/components';
 import { Skeleton } from './skeleton';
-import { Scheduler } from '../core/scheduler';
-import { forEach } from '../core/asset-manager/utilities';
 
 export class SkeletonSystem extends System {
     /**
@@ -68,5 +65,5 @@ function initSkeletonSystem () {
     }
     const sys = new SkeletonSystem();
     (SkeletonSystem.instance as any) = sys;
-    director.registerSystem(SkeletonSystem.ID, sys, 1000);
+    director.registerSystem(SkeletonSystem.ID, sys, System.Priority.SCHEDULED);
 }

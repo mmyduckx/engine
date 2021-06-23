@@ -172,7 +172,7 @@ export class AnimationManager extends System {
 
 director.on(Director.EVENT_INIT, () => {
     const animationManager = new AnimationManager();
-    director.registerSystem(AnimationManager.ID, animationManager, Scheduler.PRIORITY_SYSTEM);
+    director.registerSystem(AnimationManager.ID, animationManager, System.Priority.SCHEDULED);
 });
 
 legacyCC.AnimationManager = AnimationManager;
