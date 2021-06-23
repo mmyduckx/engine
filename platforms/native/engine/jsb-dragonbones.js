@@ -335,6 +335,7 @@ const cacheManager = require('./jsb-cache-manager');
     let superProto = cc.internal.Renderable2D.prototype;
     let armatureDisplayProto = cc.internal.ArmatureDisplay.prototype;
     const AnimationCacheMode = cc.internal.ArmatureDisplay.AnimationCacheMode;
+    let armatureSystem = cc.internal.ArmatureSystem;
 
     armatureDisplayProto.initFactory = function () {
         this._factory = dragonBones.CCFactory.getFactory();
@@ -523,6 +524,7 @@ const cacheManager = require('./jsb-cache-manager');
         }
         this.syncTransform(true);
         this._flushAssembler();
+        armatureSystem.instance.registerArmature(this);
         middleware.retain();
     };
 
@@ -534,6 +536,7 @@ const cacheManager = require('./jsb-cache-manager');
         if (this._armature && !this.isAnimationCached()) {
             this._factory.remove(this._armature);
         }
+        armatureSystem.instance.unregisterArmature(this);
         middleware.release();
     };
 

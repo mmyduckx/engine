@@ -4,6 +4,7 @@ import { System } from '../core/components';
 import { ArmatureDisplay } from './ArmatureDisplay';
 import { Scheduler } from '../core/scheduler';
 import { forEach } from '../core/asset-manager/utilities';
+import { legacyCC } from '../core/global-exports';
 
 export class ArmatureSystem extends System {
     /**
@@ -70,3 +71,5 @@ function initArmatureSystem () {
     (ArmatureSystem.instance as any) = sys;
     director.registerSystem(ArmatureSystem.ID, sys, 1000);
 }
+
+legacyCC.internal.ArmatureSystem = ArmatureSystem;
