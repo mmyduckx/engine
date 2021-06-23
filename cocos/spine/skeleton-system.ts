@@ -1,9 +1,9 @@
 import { EDITOR } from 'internal:constants';
 import { director, Director } from '../core/director';
 import { System } from '../core/components';
-import { legacyCC } from '../core/global-exports';
 import { Skeleton } from './skeleton';
 import { Scheduler } from '../core/scheduler';
+import { forEach } from '../core/asset-manager/utilities';
 
 export class SkeletonSystem extends System {
     /**
@@ -21,48 +21,39 @@ export class SkeletonSystem extends System {
      * 获取Spine骨骼系统的实例。
      */
 
-    // static get instance (): SkeletonSystem {
-    //     return SkeletonSystem._instance;
-    // }
-
-    public static _instance: SkeletonSystem;
-
-    protected _skeleton : Skeleton| null = null;
-
-    // protected _onEnable = false;
-
-    private static _skeletonCount = 0;
-
-    // constructor () {
-    //     super();
-    //     SkeletonSystem._skeletonCount = 0;
-    // }
-
-    // public onEnable () {
-    //     if (!this._onEnable) {
-    //         this._onEnable = true;
-    //     }
-    // }
-
-    // public onDisable () {
-    //     this._onEnable = false;
-    // }
-
-    postUpdate (dt: number) {
-        if (!this._skeleton) {
-            return;
-        }
-        this._skeleton.updateAnimation(dt);
+    public static get instance (): SkeletonSystem {
+        return SkeletonSystem._instance;
     }
+
+    public static set instance (sys:SkeletonSystem) {
+        SkeletonSystem._instance = sys;
+    }
+
+    private static _instance: SkeletonSystem;
+
+    private _skeletons = new Set<Skeleton>();
 
     public registerSkeleton (skeleton: Skeleton | null) {
         if (!skeleton) return;
-        SkeletonSystem._skeletonCount++;
-        this._skeleton = skeleton;
+        if (!this._skeletons.has(skeleton)) {
+            this._skeletons.add(skeleton);
+        }
     }
 
-    public unregisterSkeleton () {
-        SkeletonSystem._skeletonCount--;
+    public unregisterSkeleton (skeleton: Skeleton | null) {
+        if (!skeleton) return;
+        if (this._skeletons.has(skeleton)) {
+            this._skeletons.delete(skeleton);
+        }
+    }
+
+    postUpdate (dt: number) {
+        if (!this._skeletons) {
+            return;
+        }
+        this._skeletons.forEach((skeleton) => {
+            skeleton.updateAnimation(dt);
+        });
     }
 }
 
@@ -71,13 +62,11 @@ director.once(Director.EVENT_INIT, () => {
 });
 
 function initSkeletonSystem () {
-    const oldIns = SkeletonSystem._instance;
+    const oldIns = SkeletonSystem.instance;
     if (oldIns) {
         director.unregisterSystem(oldIns);
     }
     const sys = new SkeletonSystem();
-    (SkeletonSystem._instance as any) = sys;
-    director.registerSystem(SkeletonSystem.ID, sys, 100);
+    (SkeletonSystem.instance as any) = sys;
+    director.registerSystem(SkeletonSystem.ID, sys, 1000);
 }
-
-legacyCC.internal.SpineSkeletonSystem = SkeletonSystem;

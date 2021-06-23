@@ -4,7 +4,6 @@
  */
 
 import { EDITOR } from 'internal:constants';
-import { SkeletonSystem } from './skeleton-system';
 import { TrackEntryListeners } from './track-entry-listeners';
 import spine from './lib/spine-core.js';
 import SkeletonCache, { AnimationCache, AnimationFrame } from './skeleton-cache';
@@ -22,6 +21,7 @@ import { MaterialInstance } from '../core/renderer';
 import { js } from '../core/utils/js';
 import { BlendFactor, BlendOp } from '../core/gfx';
 import { legacyCC } from '../core/global-exports';
+import { SkeletonSystem } from './skeleton-system';
 
 export const timeScale = 1.0;
 
@@ -1244,12 +1244,12 @@ export class Skeleton extends Renderable2D {
     public onEnable () {
         super.onEnable();
         this._flushAssembler();
-        SkeletonSystem._instance.registerSkeleton(this);
+        SkeletonSystem.instance.registerSkeleton(this);
     }
 
     public onDisable () {
         super.onDisable();
-        SkeletonSystem._instance.unregisterSkeleton();
+        SkeletonSystem.instance.unregisterSkeleton(this);
     }
 
     public onDestroy () {
