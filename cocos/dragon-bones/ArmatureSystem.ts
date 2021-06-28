@@ -2,6 +2,7 @@ import { director } from '../core/director';
 import { System } from '../core/components';
 import { ArmatureDisplay } from './ArmatureDisplay';
 import { legacyCC } from '../core/global-exports';
+import { errorID } from '../core';
 
 export class ArmatureSystem extends System {
     /**
@@ -16,6 +17,9 @@ export class ArmatureSystem extends System {
 
     private constructor () {
         super();
+        if (ArmatureSystem.instance) {
+            errorID(12101);
+        }
     }
 
     /**
@@ -27,33 +31,33 @@ export class ArmatureSystem extends System {
     public static getInstance () {
         if (!ArmatureSystem.instance) {
             ArmatureSystem.instance = new ArmatureSystem();
-            director.registerSystem(ArmatureSystem.ID, ArmatureSystem.instance, System.Priority.SCHEDULER);
+            director.registerSystem(ArmatureSystem.ID, ArmatureSystem.instance, System.Priority.HIGH);
         }
         return ArmatureSystem.instance;
     }
 
-    private static armatures = new Set<ArmatureDisplay>();
+    private armatures = new Set<ArmatureDisplay>();
 
-    public add (skeleton: ArmatureDisplay | null) {
-        if (!skeleton) return;
-        if (!ArmatureSystem.armatures.has(skeleton)) {
-            ArmatureSystem.armatures.add(skeleton);
+    public add (armature: ArmatureDisplay | null) {
+        if (!armature) return;
+        if (!this.armatures.has(armature)) {
+            this.armatures.add(armature);
         }
     }
 
-    public remove (skeleton: ArmatureDisplay | null) {
-        if (!skeleton) return;
-        if (ArmatureSystem.armatures.has(skeleton)) {
-            ArmatureSystem.armatures.delete(skeleton);
+    public remove (armature: ArmatureDisplay | null) {
+        if (!armature) return;
+        if (this.armatures.has(armature)) {
+            this.armatures.delete(armature);
         }
     }
 
     postUpdate (dt: number) {
-        if (!ArmatureSystem.armatures) {
+        if (!this.armatures) {
             return;
         }
-        ArmatureSystem.armatures.forEach((skeleton) => {
-            skeleton.updateAnimation(dt);
+        this.armatures.forEach((armature) => {
+            armature.updateAnimation(dt);
         });
     }
 }
